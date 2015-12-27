@@ -35,8 +35,28 @@ public class EditorFrame extends JFrame {
         }
         //Add the menu to the menuBar so it will dropdown.
         menuBar.add(menu);
+        //Add the controls to the menuBar
+        addControlMenu(menuBar);
         //Add it all to the top of the frame / window.
         this.setJMenuBar(menuBar);
+    }
+
+    private void addControlMenu(JMenuBar menuBar) {
+        //List of control descriptions
+        String[] controls = {"Left click for to place currently selected tile.", "Right click to delete tiles."};
+        //Make a new menu for all the controls
+        JMenu menu = new JMenu("Controls");
+        //For each of the controls, add a new JMenuItem giving their description.
+        for(int i = 0; i < controls.length; i++) {
+            //Adding the new menu item.
+            menu.add(new JMenuItem(controls[i]));
+            //Separating the items to make it easier to read but only if it is not the last item in the list.
+            if(i + 1 != controls.length) {
+                menu.addSeparator();
+            }
+        }
+        //Adding the menu to the JMenuBar
+        menuBar.add(menu);
     }
 
 }

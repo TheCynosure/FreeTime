@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionListener;
  */
 public class Editor extends JPanel implements MouseListener, MouseMotionListener{
 
+    private boolean mouse1Down, mouse3Down;
     private int[][] editorBoard;
 
     //Editor size is the amount of blocks shown in the editor.
@@ -76,9 +77,11 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
             //If it is a left click than it places a tile.
             if (e.getButton() == MouseEvent.BUTTON1) {
                 editorBoard[r][c] = MenuManager.getCurrentImage();
+                mouse1Down = true;
             } else if (e.getButton() == MouseEvent.BUTTON3) {
                 //If it is a right click than it deletes the tile.
                 editorBoard[r][c] = -1;
+                mouse3Down = true;
             }
             //Then repaints so that the changes will show up.
             repaint();
@@ -87,7 +90,11 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            mouse1Down = false;
+        } else if(e.getButton() == MouseEvent.BUTTON3) {
+            mouse3Down = false;
+        }
     }
 
     @Override
@@ -109,9 +116,13 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
         int c = (e.getX()) / scaleAmount;
         //Only start editing tiles in the array if the row and column are in bound.
         if (r >= 0 && c >= 0 && r < editorBoard.length && c < editorBoard[0].length) {
-            //Only place tiles, don't delete.
-            //Only happens when dragging.
-            editorBoard[r][c] = MenuManager.getCurrentImage();
+            //If the user has mouse button 1 down then place tiles.
+            if(mouse1Down) {
+                editorBoard[r][c] = MenuManager.getCurrentImage();
+            } else if(mouse3Down) {
+                //Else delete the tile at those locations.
+                editorBoard[r][c] = -1;
+            }
             //Then repaints so that the changes will show up.
             repaint();
         }
