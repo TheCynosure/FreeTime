@@ -37,6 +37,8 @@ public class EditorFrame extends JFrame {
         menuBar.add(menu);
         //Add the controls to the menuBar
         addControlMenu(menuBar);
+        //Add the layers to the menuBar
+        addLayersMenu(menuBar);
         //Add it all to the top of the frame / window.
         this.setJMenuBar(menuBar);
     }
@@ -57,6 +59,46 @@ public class EditorFrame extends JFrame {
         }
         //Adding the menu to the JMenuBar
         menuBar.add(menu);
+    }
+
+    private void addLayersMenu(JMenuBar menuBar) {
+        //Same thing as the control menu except lists the layers that the user can switch between.
+        String[] layers = {"Foreground (Has Collision)", "Background (No Collision)"};
+        //Make a new menu for all the controls
+        JMenu menu = new JMenu("Layers");
+        //For each of the controls, add a new JMenuItem giving their description.
+        for(int i = 0; i < layers.length; i++) {
+            //Making a new menu item.
+            JMenuItem menuItem = new JMenuItem(layers[i]);
+            //Adding a new Action listener so that when selected it will change the layer being used.
+            menuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //Will get the current action event (Will return the index of the menuItem pressed).
+                    //Making Foreground 0 because it is first in the layer array and will make background 1.
+                    MenuManager.setCurrentLayer(findInStringArray(layers, e.getActionCommand()));
+                    repaint();
+                }
+            });
+            //Adding it to the menu so it will be displayed.
+            menu.add(menuItem);
+            //Separating the items to make it easier to read but only if it is not the last item in the list.
+            if(i + 1 != layers.length) {
+                menu.addSeparator();
+            }
+        }
+        //Adding the menu to the JMenuBar
+        menuBar.add(menu);
+    }
+
+    private int findInStringArray(String[] array, String value) {
+        for(int i = 0; i < array.length; i++) {
+            if(array[i].equals(value)) {
+                return i;
+            }
+        }
+        //If nothing is found, it is not in the array.
+        return -1;
     }
 
 }

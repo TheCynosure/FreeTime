@@ -5,6 +5,8 @@ import javax.swing.*;
 
 /**
  * Created by Jack on 12/24/2015.
+ * The window for the creation of new maps.
+ * Also implements the new editor JFrame with its custom JMenuBar.
  */
 public class MapEditorWindow {
     public MapEditorWindow() {
@@ -17,8 +19,12 @@ public class MapEditorWindow {
         frame.setBounds(0,0,500,500);
         //Add all the images from above in the category 1 to a new menuBar.
         frame.addMenuBar(1);
+        //Create the editor
+        Editor editor = new Editor(16);
+        //Add the editor's keyListener to the window.
+        frame.addKeyListener(editor);
         //Add the editor into the window.
-        frame.add(new Editor(16));
+        frame.add(editor);
         //Let the user see it now that everything is done.
         frame.setVisible(true);
     }

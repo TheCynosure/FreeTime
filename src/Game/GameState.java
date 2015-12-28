@@ -1,29 +1,37 @@
 package Game;
 
+import Loader.ResourceManager;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  * Created by Jack on 12/23/2015.
- * TODO: Make gravity only effect the ninja if is not colliding
- * TODO: Work on map making <-- Block based or Free form?
+ * Todo: Collision that is created with the map.
+ * todo: Make the map class handle all loading and implementation of the map
+ * todo: Make the map also save the category of the image.
+ * todo: Make it so the editor can draw both background and foreground over each other so I can see what it looks like.
  */
 public class GameState extends State {
 
     private NinjaCharacter ninjaCharacter;
     private PlayerController playerController;
     private int frameNum;
+    private int[][][] map;
 
     public GameState() {
         ninjaCharacter = new NinjaCharacter(0, 500, 0, 0);
         playerController = new PlayerController(ninjaCharacter);
         frameNum = 0;
+        map = ResourceManager.loadArray(2, "TestMap11");
     }
 
     @Override
     public void paint(Graphics g, int width, int height) {
-        g.drawImage(ImageTools.createBackgroundImage(1, 18, width, height), 0, 0, null);
-        ninjaCharacter.draw(g);
+        g.drawImage(ImageTools.createBackgroundImage(map[1], width, height), 0, 0, null);
+        //Make the  ninja proportional to about 1 brick size
+        ninjaCharacter.draw(g, height / map[0].length);
     }
 
     public void update() {

@@ -51,7 +51,7 @@ public class NinjaCharacter extends Character {
     }
 
     @Override
-    public void draw(Graphics graphics) {
+    public void draw(Graphics graphics, int scale) {
         //If the vx is positive
         if(getVx() > 0) {
             //Then make the character point right
@@ -64,19 +64,19 @@ public class NinjaCharacter extends Character {
         //If there is movement in the Y direction then just use the jump animation.
         if(getVy() != 0) {
             if(lookingRight) {
-                super.draw(graphics, currentImage, 32);
+                super.draw(graphics, currentImage, scale);
             } else {
-                super.drawBackward(graphics, currentImage, 32);
+                super.drawBackward(graphics, currentImage, scale);
             }
         } else {
             //Again only worrying about x movement if no movement in the Y direction.
             //If he is looking right
             if (lookingRight) {
                 //Draw him looking right
-                super.draw(graphics, currentImage, 32);
+                super.draw(graphics, currentImage, scale);
             } else {
                 //Else draw him looking left
-                super.drawBackward(graphics, currentImage, 32);
+                super.drawBackward(graphics, currentImage, scale);
             }
         }
     }
