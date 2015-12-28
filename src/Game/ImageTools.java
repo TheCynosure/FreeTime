@@ -33,10 +33,6 @@ public class ImageTools {
                     //If there is a image index then draw it.
                     background_img.getGraphics().drawImage(ResourceManager.getImage(1, images[r][c]).getScaledInstance(scaleAmount, scaleAmount, Image.SCALE_SMOOTH), c * scaleAmount, r * scaleAmount, null);
                 }
-                else {
-                    //If there it is a blank square then just draw a rect outline.
-                    background_img.getGraphics().drawRect(c * scaleAmount, r * scaleAmount, scaleAmount, scaleAmount);
-                }
             }
         }
         return background_img;

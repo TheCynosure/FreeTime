@@ -9,12 +9,10 @@ import java.awt.event.*;
 /**
  * Created by Jack on 12/24/2015.
  * Implements a basic image placing screen to create map files.
- * TODO: Split everything into classes
  */
 public class Editor extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
 
     private boolean mouse1Down, mouse3Down;
-    private int[][] tempBoard, backgroundBoard;
     //EditorBoard 0 is the tempBoard and 1 is the backgroundBoard.
     private int[][][] editorBoards;
     //Options that allows us to save and do cool things.
@@ -30,7 +28,6 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
         this.editorSize = editorSize;
         //2 meaning there is 2 layers. Foreground and Background.
         editorBoards = new int[2][editorSize][editorSize];
-        tempBoard = new int[editorSize][editorSize];
         //Making the board all -1 or nothing.
         for(int k = 0; k < editorBoards.length; k++) {
             for (int i = 0; i < editorBoards[k].length; i++) {
@@ -78,7 +75,7 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
         int r = (e.getY() + getInsets().top) / scaleAmount;
         int c = (e.getX()) / scaleAmount;
         //Only start editing tiles in the array if the row and column are in bound.
-        if(r >= 0 && c >= 0 && r < tempBoard.length && c < tempBoard[0].length) {
+        if(r >= 0 && c >= 0 && r < editorBoards[MenuManager.getCurrentLayer()].length && c < editorBoards[MenuManager.getCurrentLayer()][0].length) {
             //If it is a left click than it places a tile.
             if (e.getButton() == MouseEvent.BUTTON1) {
                 editorBoards[MenuManager.getCurrentLayer()][r][c] = MenuManager.getCurrentImage();

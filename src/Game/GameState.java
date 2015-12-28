@@ -24,7 +24,7 @@ public class GameState extends State {
         ninjaCharacter = new NinjaCharacter(0, 500, 0, 0);
         playerController = new PlayerController(ninjaCharacter);
         frameNum = 0;
-        map = ResourceManager.loadArray(2, "TestMap11");
+        map = ResourceManager.loadArray(2, "Testing");
     }
 
     @Override

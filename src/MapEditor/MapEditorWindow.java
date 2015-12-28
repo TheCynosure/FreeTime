@@ -2,6 +2,7 @@ package MapEditor;
 import Loader.ResourceManager;
 
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Created by Jack on 12/24/2015.

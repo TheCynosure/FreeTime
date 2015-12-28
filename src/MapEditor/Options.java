@@ -26,14 +26,14 @@ public class Options {
         System.out.print("Saving... ");
         String string = promptUserForString("Save As...");
         if(string != null) {
-            int status = ResourceManager.arraySave(string, array);
+            int status = ResourceManager.saveArray(string, array);
             if (status >= 0) {
                 System.out.println("Save successful");
             } else {
-                System.out.println("Save failed");
+                System.out.println("Save failed: " + status);
             }
         } else {
-            System.out.println("Save failed");
+            System.out.println("Save failed: Null String Error");
         }
     }
 }

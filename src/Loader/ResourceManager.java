@@ -101,11 +101,12 @@ public class ResourceManager {
     //Unless given another fileName
     //DOES NOT SUPPORT RAGGED ARRAYS
     //Returns 0 if successful and -1 if not.
-    public static int arraySave(String fileName, int[][][] array) {
-        File file = new File(fileName);
+    public static int saveArray(String file_name, int[][][] array) {
+        //Need to find out if the user gave us a dir to put it in.
+        File file = new File(file_name);
         try {
             if(file.createNewFile()) {
-                PrintWriter outputFile = new PrintWriter(file);
+                PrintWriter outputFile = new PrintWriter(file_name);
                 //For all the 2D arrays in the array.
                 //First thing should be the array length so we can init it later.
                 for(int arrayNum = 0; arrayNum < array.length; arrayNum++) {
@@ -124,14 +125,17 @@ public class ResourceManager {
                 outputFile.close();
                 return 0;
             } else {
+                //If file already exists than fail.
                 return -1;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
+        //If all else fails, tell the user that we could not do it.
         return -1;
     }
 
+    /*
+    Loading methods below.
+     */
     public static int[][][] loadArray(int array_num, String file_name) {
         int[][][] loaded_array = null;
         try {
@@ -165,8 +169,13 @@ public class ResourceManager {
         //Buffered Reader so that we can read through the file.
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file_name));
-            //Start the reader on the line that we were told to start on.
-            bufferedReader.skip(i);
+            //Only skip lines if it is not 0.
+            //0 Actually skips and will miss a line otherwise.
+            //This will make it so we don't read the - / dash in between arrays.
+            if(i > 0) {
+                //Start the reader on the line that we were told to start on.
+                bufferedReader.skip(i);
+            }
             String line = bufferedReader.readLine();
             while(line != null) {
                 //Make sure to keep moving down the file.
@@ -177,6 +186,7 @@ public class ResourceManager {
                     //If its not a full line but instead a divisor between arrays then stop recording the array.
                     break;
                 } else {
+                    //Split all the elements of this array up.
                     temp_array[i - start_line] = splitElements(line);
                 }
             }
