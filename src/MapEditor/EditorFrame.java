@@ -45,7 +45,7 @@ public class EditorFrame extends JFrame {
 
     private void addControlMenu(JMenuBar menuBar) {
         //List of control descriptions
-        String[] controls = {"Left click for to place currently selected tile.", "Right click to delete tiles.", "Press S to save the map."};
+        String[] controls = {"Left click for to place currently selected tile.", "Right click to delete tiles.", "Press S to save the map.", "Press R to start / stop rendering.", "Press C to clear the editor."};
         //Make a new menu for all the controls
         JMenu menu = new JMenu("Controls");
         //For each of the controls, add a new JMenuItem giving their description.
