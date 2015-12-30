@@ -100,7 +100,8 @@ public class Character {
                         lastCollided.add(collidable_objects[r][c]);
                         collisionDetected(collidable_objects[r][c], scale_amount);
                     }
-                    if(r == player_row + 1 && player_column == c) {
+                    //Because the player could be between rows we must check both under the character.
+                    if(r == player_row + 1 && (player_column == c || player_column == c - 1)) {
                         tileUnder++;
                     }
                 }
@@ -127,7 +128,7 @@ public class Character {
             falling = false;
         } else if(vy < 0) {
             y = object.y + scale_amount;
-            vy = 0;
+            vy = -vy;
             falling = true;
         }
     }

@@ -33,8 +33,8 @@ public class GameState extends State {
     }
 
     public void update(int width, int height) {
-        playerController.checkCollision(levelManager, height / levelManager.getRowNum());
         ninjaCharacter.move();
+        playerController.checkCollision(levelManager, height / levelManager.getRowNum());
         frameNum++;
         //Only increase the player animation once every 4 frames.
         if(frameNum % 4 == 0) {
