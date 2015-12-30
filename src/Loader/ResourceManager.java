@@ -1,9 +1,6 @@
 package Loader;
 
-import sun.plugin2.gluegen.runtime.BufferFactory;
-
 import javax.imageio.ImageIO;
-import java.awt.color.ICC_Profile;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
@@ -152,11 +149,13 @@ public class ResourceManager {
             loaded_array = new int[array_num][rows][columns];
             //The first array will always be on line 0
             int start_index = 0;
-            for(int i = 0; i < array_num; i++) {
+//            for(int i = 0; i < array_num; i++) {
                 ResourceLoaderInfo info = loadSingleArray(start_index, rows, columns, file_name);
-                loaded_array[i] = info.getReturn_array();
-                start_index = info.getReturn_index();
-            }
+//                loaded_array[i] = info.getReturn_array();
+//                start_index = info.getReturn_index();
+//            }
+            loaded_array[0] = info.getReturn_array();
+            loaded_array[1] = loadSingleArray(info.getReturn_index(), rows,columns, file_name).getReturn_array();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -174,14 +173,18 @@ public class ResourceManager {
             //This will make it so we don't read the - / dash in between arrays.
             if(i > 0) {
                 //Start the reader on the line that we were told to start on.
-                bufferedReader.skip(i);
+                for(int j = 0; j <= i; j++) {
+                    try {
+                        bufferedReader.readLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            String line = bufferedReader.readLine();
+            String line = "";
             while(line != null) {
                 //Make sure to keep moving down the file.
                 line = bufferedReader.readLine();
-                //Keep track of what line we are on.
-                i++;
                 if(line.equals("-")) {
                     //If its not a full line but instead a divisor between arrays then stop recording the array.
                     break;
@@ -189,6 +192,8 @@ public class ResourceManager {
                     //Split all the elements of this array up.
                     temp_array[i - start_line] = splitElements(line);
                 }
+                //Keep track of what line we are on.
+                i++;
             }
         } catch (IOException e) {
             e.printStackTrace();

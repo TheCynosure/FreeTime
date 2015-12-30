@@ -19,8 +19,10 @@ public class Window {
         GameState gameState = new GameState();
         StateManager.addState(gameState);
 
-        frame.addKeyListener(gameState);
-        frame.add(new CanvasManager());
+        CanvasManager canvasManager = new CanvasManager();
+        frame.addComponentListener(canvasManager);
+        frame.addKeyListener(canvasManager);
+        frame.add(canvasManager);
         frame.setVisible(true);
     }
 

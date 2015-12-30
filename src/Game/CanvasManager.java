@@ -2,16 +2,13 @@ package Game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 /**
  * Created by Jack on 12/23/2015.
  * Invokes the current states methods.
  */
-public class CanvasManager extends JPanel implements KeyListener {
+public class CanvasManager extends JPanel implements KeyListener, ComponentListener {
 
     public CanvasManager() {
         Timer timer = new Timer(1000 / 60, new ActionListener() {
@@ -32,7 +29,7 @@ public class CanvasManager extends JPanel implements KeyListener {
     }
 
     public void update() {
-        StateManager.getCurrentState().update();
+        StateManager.getCurrentState().update(getWidth(), getHeight());
     }
 
     @Override
@@ -48,5 +45,26 @@ public class CanvasManager extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         StateManager.getCurrentState().keyReleased(e);
+    }
+
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        StateManager.getCurrentState().componentResized(e, getWidth(),  getHeight());
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 }

@@ -1,5 +1,6 @@
 package Game;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
@@ -8,9 +9,18 @@ import java.awt.event.KeyEvent;
 public class PlayerController {
 
     private Character character;
+    private boolean collision_debug;
 
     public PlayerController(Character character) {
         this.character = character;
+    }
+
+    public void characterDrawMode(Graphics graphics, int scale) {
+        if(collision_debug) {
+            character.debugDraw(graphics, scale);
+        } else {
+            character.draw(graphics, scale);
+        }
     }
 
     public void keyPress(KeyEvent keyEvent) {
@@ -30,7 +40,17 @@ public class PlayerController {
             if(character.getVy() == 0) {
                 //Give them a Y acceleration.
                 // - is up
-                character.setVy(-5);
+                character.setVy(-20);
+            }
+        }
+
+        //Start the debug state:
+        if(keyEvent.getKeyChar() == 'p') {
+            //Switch the current debug state.
+            if(collision_debug) {
+                collision_debug = false;
+            } else {
+                collision_debug = true;
             }
         }
     }
@@ -46,4 +66,13 @@ public class PlayerController {
             character.setVx(0);
         }
     }
+
+    public boolean isCollisionDebugActive() {
+        return collision_debug;
+    }
+
+    public void checkCollision(LevelManager levelManager, int scale_amount) {
+        character.checkCollision(levelManager.getCollidable_objects(), scale_amount);
+    }
+
 }

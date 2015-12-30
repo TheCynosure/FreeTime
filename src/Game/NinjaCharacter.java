@@ -18,11 +18,6 @@ public class NinjaCharacter extends Character {
 
     @Override
     public void move() {
-        if(getVy() < 0) {
-            setVy(getVy() + 0.1);
-        } else if(getVy() > 0) {
-            setVy(0);
-        }
         super.move();
     }
 
@@ -79,5 +74,16 @@ public class NinjaCharacter extends Character {
                 super.drawBackward(graphics, currentImage, scale);
             }
         }
+    }
+
+    @Override
+    public void debugDraw(Graphics graphics, int scale) {
+        graphics.setColor(Color.CYAN);
+        graphics.drawRect(getX() - scale * 2, getY() - scale * 2, scale * 5, scale * 5);
+        draw(graphics, scale);
+        for(int i = 0; i < getLastCollided().size(); i++) {
+            graphics.fillRect(getLastCollided().get(i).x, getLastCollided().get(i).y, scale, scale);
+        }
+        graphics.drawRect(getX(), getY(), scale, scale);
     }
 }
