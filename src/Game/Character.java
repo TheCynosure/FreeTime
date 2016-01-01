@@ -2,19 +2,22 @@ package Game;
 
 import Loader.ResourceManager;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.sun.scenario.effect.impl.sw.sse.SSEColorAdjustPeer;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
- * Created by Jack on 12/23/2015.
+ * Created by Jack on 12/23/2015. TODO: Collision works for the top and bottom but not the left and the right.
  * Base character class that includes basic functionality including:
  *        - Drawing
  *        - Movement
+ *        -Collision
  */
 public class Character {
 
-    private int x, y, imageId, imageCategory;
+    private int x, y, imageId, imageCategory, lastX, lastY;
     private double vx, vy;
     private ArrayList<Rectangle> lastCollided;
     private boolean falling = true;
@@ -22,6 +25,8 @@ public class Character {
     public Character(int x, int y, int imageCategory, int imageId) {
         this.x = x;
         this.y = y;
+        lastX = x;
+        lastY = y;
         this.imageId = imageId;
         this.imageCategory = imageCategory;
         vx = 0;
@@ -30,6 +35,8 @@ public class Character {
     }
 
     public void move() {
+        lastX = x;
+        lastY = y;
         x += vx;
         y += vy;
         if(vy < 0) {
@@ -87,20 +94,77 @@ public class Character {
 
     public void checkCollision(Rectangle[][] collidable_objects, int scale_amount) {
         lastCollided.clear();
-        int tileUnder = 0;
+        int tile_under = 0;
         int player_column = getX() / scale_amount;
         int player_row = getY() / scale_amount;
-
-        //TODO: Make a collision Method that works.
-
-        if(player_row + 1 < collidable_objects.length && player_column - 1>= 0 && player_column + 1 < collidable_objects[0].length && collidable_objects[player_row + 1][player_column] != null && collidable_objects[player_row + 1][player_column - 1] != null) {
-                        tileUnder++;
+        //First process out of map bounds collisions!
+        //Left side of map
+        if(getX() < 0) {
+            setX(0);
+        }
+        //Right side of map
+        else if(getX() + scale_amount > collidable_objects[0].length * scale_amount) {
+            setX(collidable_objects[0].length * scale_amount - scale_amount);
+        }
+        //Top
+        if(getY() < 0) {
+            setY(0);
+            falling = true;
+            setVy(0);
+        }
+        //Wont check for bottom collisions. This way the player can fall out the bottom.
+        for(int r = player_row - 1; r <= player_row + 1; r++) {
+            for(int c = player_column - 1; c <= player_column + 1; c++) {
+                if(r >= 0 && c >= 0 && r < collidable_objects.length && c < collidable_objects[0].length && collidable_objects[r][c] != null) {
+                    //This is a tile then...
+                    int return_val = checkAndHandleCollision(collidable_objects[r][c], scale_amount);
+                    if(r == player_row + 1) {
+                        tile_under += return_val;
+                    }
+                }
+            }
         }
         //Check the main area first, top, left, right, bottom.
-        if(tileUnder == 0) {
+        if(tile_under == 0) {
             //If there is no tiles under the player than apply gravity.
             falling = true;
         }
+    }
+
+    private void reassignLastVals() {
+        lastX = getX();
+        lastY = getY();
+    }
+
+    public int checkAndHandleCollision(Rectangle collided_obj, int scale_amount) {
+        //Check if there was a collision on any of the corners.
+        //If there was then check what side it happened on!
+        int collision_num = 0;
+        if(collided_obj.contains(getX(), getY()) || collided_obj.contains(getX() + scale_amount, getY()) || collided_obj.contains(getX(), getY() + scale_amount) || collided_obj.contains(getX() + scale_amount, getY() + scale_amount) || collided_obj.contains(getX() + scale_amount / 2, getY() + scale_amount) || collided_obj.contains(getX() + scale_amount / 2, getY()) || collided_obj.contains(getX(), getY() + scale_amount / 2) || collided_obj.contains(getX() + scale_amount, getY() + scale_amount / 2)) {
+            lastCollided.add(collided_obj);
+            //Top
+            if (lastY + scale_amount < collided_obj.y && getY() + scale_amount >= collided_obj.y) {
+                handleTopCollision(collided_obj, scale_amount);
+                reassignLastVals();
+            }
+            //Left
+            if (lastX + scale_amount < collided_obj.x && getX() + scale_amount >= collided_obj.x) {
+                handleLeftCollision(collided_obj, scale_amount);
+                reassignLastVals();
+            }
+            //Right
+            if (lastX > collided_obj.x + scale_amount && getX() <= collided_obj.x + scale_amount) {
+                handleRightCollision(collided_obj, scale_amount);
+                reassignLastVals();
+            }
+            //Bottom
+            if (lastY > collided_obj.y + scale_amount && getY() <= collided_obj.y + scale_amount) {
+                handleBottomCollision(collided_obj, scale_amount);
+                reassignLastVals();
+            }
+            collision_num++;
+        }
+        return collision_num;
     }
 
     /*
@@ -120,12 +184,10 @@ public class Character {
     }
 
     public void handleLeftCollision(Rectangle rectangle, int scale_amount) {
-        setVx(0);
         setX(rectangle.x - scale_amount);
     }
 
     public void handleRightCollision(Rectangle rectangle, int scale_amount) {
-        setVx(0);
         setX(rectangle.x + scale_amount);
     }
 
@@ -165,4 +227,6 @@ public class Character {
     public ArrayList<Rectangle> getLastCollided() {
         return lastCollided;
     }
+
+    public boolean isFalling() { return falling; }
 }

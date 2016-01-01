@@ -8,6 +8,7 @@ import java.io.File;
  * Created by Jack on 12/24/2015.
  * The window for the creation of new maps.
  * Also implements the new editor JFrame with its custom JMenuBar.
+ * //TODO: Try making different size maps.
  */
 public class MapEditorWindow {
     public MapEditorWindow() {

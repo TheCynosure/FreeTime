@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 
 /**
  * Created by Jack on 12/23/2015.
- * Todo: Collision that is created with the map.
+ * Todo: Try to make there a buffer around the map of empty space.
  */
 public class GameState extends State {
 
@@ -21,7 +21,7 @@ public class GameState extends State {
         ninjaCharacter = new NinjaCharacter(200, 100, 0, 0);
         playerController = new PlayerController(ninjaCharacter);
         frameNum = 0;
-        levelManager = new LevelManager(ResourceManager.loadArray(2, "Levels/Level1"), 1);
+        levelManager = new LevelManager(ResourceManager.loadArray(2, "Levels/ColTestMap"), 1);
     }
 
     @Override
@@ -29,7 +29,6 @@ public class GameState extends State {
         //Make the  ninja proportional to about 1 brick size
         levelManager.paintLevel(g, width, height);
         playerController.characterDrawMode(g, height / levelManager.getRowNum());
-//        ninjaCharacter.draw(g, height / levelManager.getRowNum());
     }
 
     public void update(int width, int height) {

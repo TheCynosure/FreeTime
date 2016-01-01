@@ -10,6 +10,7 @@ public class PlayerController {
 
     private Character character;
     private boolean collision_debug;
+    private int jump_num = 0;
 
     public PlayerController(Character character) {
         this.character = character;
@@ -37,9 +38,10 @@ public class PlayerController {
         //Jump --> Space keycode is 32
         if(keyEvent.getKeyCode() == 32) {
             //Only if the character has no Y acceleration will they be able to jump again.
-            if(character.getVy() == 0) {
+            if(jump_num < 2) {
                 //Give them a Y acceleration.
                 // - is up
+                jump_num++;
                 character.setVy(-20);
             }
         }
@@ -73,6 +75,10 @@ public class PlayerController {
 
     public void checkCollision(LevelManager levelManager, int scale_amount) {
         character.checkCollision(levelManager.getCollidable_objects(), scale_amount);
+        if(!character.isFalling()) {
+            //If is on the ground then restore jump num.
+            jump_num = 0;
+        }
     }
 
 }
