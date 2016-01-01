@@ -18,7 +18,7 @@ public class GameState extends State {
     private LevelManager levelManager;
 
     public GameState() {
-        ninjaCharacter = new NinjaCharacter(200, 300, 0, 0);
+        ninjaCharacter = new NinjaCharacter(200, 100, 0, 0);
         playerController = new PlayerController(ninjaCharacter);
         frameNum = 0;
         levelManager = new LevelManager(ResourceManager.loadArray(2, "Levels/Level1"), 1);

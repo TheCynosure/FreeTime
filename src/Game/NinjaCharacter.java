@@ -79,7 +79,7 @@ public class NinjaCharacter extends Character {
     @Override
     public void debugDraw(Graphics graphics, int scale) {
         graphics.setColor(Color.CYAN);
-        graphics.drawRect(getX() - scale * 2, getY() - scale * 2, scale * 5, scale * 5);
+        graphics.drawRect(getX() - scale, getY() - scale, scale * 3, scale * 3);
         draw(graphics, scale);
         for(int i = 0; i < getLastCollided().size(); i++) {
             graphics.fillRect(getLastCollided().get(i).x, getLastCollided().get(i).y, scale, scale);

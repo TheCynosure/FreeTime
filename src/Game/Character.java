@@ -1,6 +1,7 @@
 package Game;
 
 import Loader.ResourceManager;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -80,66 +81,54 @@ public class Character {
 
     public void debugDraw(Graphics graphics, int scale) {
         graphics.setColor(Color.CYAN);
-        graphics.drawRect(getX() - scale * 2, getY() - scale * 2, scale * 5, scale * 5);
+        graphics.drawRect(getX() - scale, getY() - scale, scale * 3, scale * 3);
         draw(graphics, scale);
     }
 
     public void checkCollision(Rectangle[][] collidable_objects, int scale_amount) {
         lastCollided.clear();
-        //only check the objects that are within a 5x5 square around the player.
-        //Num of collision from under the player
         int tileUnder = 0;
         int player_column = getX() / scale_amount;
         int player_row = getY() / scale_amount;
-        for(int r = player_row - 2; r <= player_row + 2; r++) {
-            for(int c = player_column - 2; c <= player_column + 2; c++) {
-                //Make sure we are checking only the columns and rows that are inbound
-                if(r >= 0 && c >= 0 && r < collidable_objects.length && c < collidable_objects[0].length && collidable_objects[r][c] != null) {
-                    //If there was a collision with one of the sides...
-                    if(checkSingleCollision(collidable_objects[r][c], scale_amount)) {
-                        lastCollided.add(collidable_objects[r][c]);
-                        collisionDetected(collidable_objects[r][c], scale_amount);
-                    }
-                    //Because the player could be between rows we must check both under the character.
-                    if(r == player_row + 1 && (player_column == c || player_column == c - 1)) {
+
+        //TODO: Make a collision Method that works.
+
+        if(player_row + 1 < collidable_objects.length && player_column - 1>= 0 && player_column + 1 < collidable_objects[0].length && collidable_objects[player_row + 1][player_column] != null && collidable_objects[player_row + 1][player_column - 1] != null) {
                         tileUnder++;
-                    }
-                }
-            }
         }
+        //Check the main area first, top, left, right, bottom.
         if(tileUnder == 0) {
             //If there is no tiles under the player than apply gravity.
             falling = true;
         }
     }
 
-    public void collisionDetected(Rectangle object, int scale_amount) {
-        //Will change the characters movement based on the collision.
-        if(vx > 0) {
-            x = object.x - scale_amount;
-            vx = 0;
-        } else if(vx < 0) {
-            x = object.x + scale_amount;
-            vx = 0;
-        }
-        if(vy > 0) {
-            y = object.y - scale_amount;
-            vy = 0;
-            falling = false;
-        } else if(vy < 0) {
-            y = object.y + scale_amount;
-            vy = -vy;
-            falling = true;
-        }
+    /*
+       These methods handle the movement after a certain type of collision.
+     */
+
+    public void handleTopCollision(Rectangle rectangle, int scale_amount) {
+        setVy(0);
+        falling = false;
+        setY((int) (rectangle.getY() - scale_amount));
     }
 
-    //Will check if the player is colliding with a single object.
-    private boolean checkSingleCollision(Rectangle object, int scale_amount) {
-        if(object.intersects(new Rectangle(getX(), getY(), scale_amount, scale_amount))) {
-            return true;
-        }
-        return false;
+    public void handleBottomCollision(Rectangle rectangle, int scale_amount) {
+        setVy(0);
+        falling = true;
+        setY(rectangle.y + scale_amount);
     }
+
+    public void handleLeftCollision(Rectangle rectangle, int scale_amount) {
+        setVx(0);
+        setX(rectangle.x - scale_amount);
+    }
+
+    public void handleRightCollision(Rectangle rectangle, int scale_amount) {
+        setVx(0);
+        setX(rectangle.x + scale_amount);
+    }
+
 
     public int getX() {
         return x;
