@@ -97,6 +97,13 @@ public class Character {
         int tile_under = 0;
         int player_column = getX() / scale_amount;
         int player_row = getY() / scale_amount;
+        int dir = 0;
+        //Direction of the player.
+        if(getX() - lastX > 0) {
+            dir = 1;
+        } else if(getX() - lastX < 0) {
+            dir = -1;
+        }
         //First process out of map bounds collisions!
         //Left side of map
         if(getX() < 0) {
@@ -117,7 +124,12 @@ public class Character {
             for(int c = player_column - 1; c <= player_column + 1; c++) {
                 if(r >= 0 && c >= 0 && r < collidable_objects.length && c < collidable_objects[0].length && collidable_objects[r][c] != null) {
                     //This is a tile then...
-                    int return_val = checkAndHandleCollision(collidable_objects[r][c], scale_amount);
+                    collidable_objects[r][c] = new Rectangle(c * scale_amount, r * scale_amount, scale_amount, scale_amount);
+                    boolean below_player = false;
+                    if(r == player_row + 1 && (c == player_column || c == player_column + dir)){
+                        below_player = true;
+                    }
+                    int return_val = checkAndHandleCollision(collidable_objects[r][c], scale_amount, below_player);
                     if(r == player_row + 1) {
                         tile_under += return_val;
                     }
@@ -136,61 +148,38 @@ public class Character {
         lastY = getY();
     }
 
-    public int checkAndHandleCollision(Rectangle collided_obj, int scale_amount) {
+    public int checkAndHandleCollision(Rectangle collided_obj, int scale_amount, boolean below_player) {
         //Check if there was a collision on any of the corners.
         //If there was then check what side it happened on!
         int collision_num = 0;
         if(collided_obj.contains(getX(), getY()) || collided_obj.contains(getX() + scale_amount, getY()) || collided_obj.contains(getX(), getY() + scale_amount) || collided_obj.contains(getX() + scale_amount, getY() + scale_amount) || collided_obj.contains(getX() + scale_amount / 2, getY() + scale_amount) || collided_obj.contains(getX() + scale_amount / 2, getY()) || collided_obj.contains(getX(), getY() + scale_amount / 2) || collided_obj.contains(getX() + scale_amount, getY() + scale_amount / 2)) {
             lastCollided.add(collided_obj);
             //Top
-            if (lastY + scale_amount < collided_obj.y && getY() + scale_amount >= collided_obj.y) {
-                handleTopCollision(collided_obj, scale_amount);
-                reassignLastVals();
-            }
-            //Left
-            if (lastX + scale_amount < collided_obj.x && getX() + scale_amount >= collided_obj.x) {
-                handleLeftCollision(collided_obj, scale_amount);
-                reassignLastVals();
-            }
-            //Right
-            if (lastX > collided_obj.x + scale_amount && getX() <= collided_obj.x + scale_amount) {
-                handleRightCollision(collided_obj, scale_amount);
-                reassignLastVals();
+            if (lastY + scale_amount <= collided_obj.y && getY() + scale_amount >= collided_obj.y) {
+                setVy(0);
+                falling = false;
+                setY((int) (collided_obj.getY() - scale_amount));;
             }
             //Bottom
-            if (lastY > collided_obj.y + scale_amount && getY() <= collided_obj.y + scale_amount) {
-                handleBottomCollision(collided_obj, scale_amount);
-                reassignLastVals();
+            else if (lastY >= collided_obj.y + scale_amount && getY() <= collided_obj.y + scale_amount) {
+                setVy(0);
+                falling = true;
+                setY((int) (collided_obj.getY() + scale_amount));
+            }
+            if(!below_player) {
+                //Left
+                if (lastX + scale_amount <= collided_obj.x && getX() + scale_amount >= collided_obj.x) {
+                    setX((int) (collided_obj.getX() - scale_amount));
+                }
+                //Right
+                if (lastX >= collided_obj.x + scale_amount && getX() <= collided_obj.x + scale_amount) {
+                    setX((int) (collided_obj.getX() + scale_amount));
+                }
             }
             collision_num++;
         }
         return collision_num;
     }
-
-    /*
-       These methods handle the movement after a certain type of collision.
-     */
-
-    public void handleTopCollision(Rectangle rectangle, int scale_amount) {
-        setVy(0);
-        falling = false;
-        setY((int) (rectangle.getY() - scale_amount));
-    }
-
-    public void handleBottomCollision(Rectangle rectangle, int scale_amount) {
-        setVy(0);
-        falling = true;
-        setY(rectangle.y + scale_amount);
-    }
-
-    public void handleLeftCollision(Rectangle rectangle, int scale_amount) {
-        setX(rectangle.x - scale_amount);
-    }
-
-    public void handleRightCollision(Rectangle rectangle, int scale_amount) {
-        setX(rectangle.x + scale_amount);
-    }
-
 
     public int getX() {
         return x;
